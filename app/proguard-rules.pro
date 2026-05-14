@@ -1,0 +1,2 @@
+-keep class com.bayanihan.node.LlamaEngine { *; }
+-keepclassmembers class com.bayanihan.node.LlamaEngine { native <methods>; }
