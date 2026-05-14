@@ -2,13 +2,17 @@ package com.bayanihan.node
 
 import android.app.ActivityManager
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.format.Formatter
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.bayanihan.node.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import java.io.*
@@ -28,17 +32,35 @@ class MainActivity : AppCompatActivity() {
         private const val MIN_VALID_SIZE = 500_000_000L // 500 MB sanity check
     }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            // User denied permission. The app may not be able to show foreground service notifications.
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        askNotificationPermission()
         checkRam()
         refreshModelStatus()
         refreshServiceStatus()
 
         binding.btnDownload.setOnClickListener { startDownload() }
         binding.btnStartStop.setOnClickListener { toggleService() }
+    }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     override fun onResume() {
