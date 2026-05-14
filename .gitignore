@@ -1,0 +1,52 @@
+# Built artifacts
+bin/
+gen/
+out/
+build/
+.gradle/
+.kotlin/
+app/build/
+app/.cxx/
+app/.externalNativeBuild/
+.cxx/
+
+# NDK/C++ specific
+*.o
+*.so
+*.a
+*.pyc
+app/src/main/cpp/llama.cpp/
+**/cmake_install.cmake
+**/CMakeCache.txt
+**/CMakeFiles/
+**/Makefile
+**/rules.ninja
+**/.ninja_deps
+**/.ninja_log
+
+# Large Model files
+*.gguf
+*.bin
+
+# Local configuration
+local.properties
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+*.iml
+*.ipr
+*.iws
+
+# Keystores and sensitive data
+*.jks
+*.keystore
+*.p12
+google-services.json
+
+# System files
+.DS_Store
+Thumbs.db
+capture.png
