@@ -53,7 +53,6 @@ class GemmaService : Service() {
         isRunning = true
         registerThermal()
 
-<<<<<<< Updated upstream:app/src/main/java/com/bayanihan/node/GemmaService.kt
         // Start server immediately so it can respond even if model is still loading
         try {
             server = OllamaServer(11434).also { it.start() }
@@ -78,28 +77,6 @@ class GemmaService : Service() {
             if (!ok) {
                 Log.e(TAG, "GemmaEngine failed to load")
                 notify("Failed to load model — check logs")
-                // Don't stopSelf immediately, let the server stay up to report the error if hit
-=======
-        scope.launch {
-            val file = File(getExternalFilesDir(null), "gemma-4-E2B-it-Q5_K_S.gguf")
-            val modelPath = file.absolutePath
-            
-            if (!file.exists()) {
-                Log.e("BayanihanNode", "Model file NOT FOUND at: $modelPath")
-                notify("Error: Model file missing")
-                stopSelf()
-                return@launch
-            }
-            
-            Log.i("BayanihanNode", "Found model file: $modelPath (${file.length()} bytes)")
-            notify("Loading model…")
-
-            val ok = LlamaEngine.load(modelPath, nGpuLayers = 0, nCtx = 4096)
-            if (!ok) {
-                Log.e("BayanihanNode", "LlamaEngine.load failed for $modelPath")
-                notify("Failed to load model — possible corruption")
-                stopSelf()
->>>>>>> Stashed changes:app/src/main/java/com/bayanihan/node/LlamaService.kt
                 return@launch
             }
 
@@ -174,45 +151,47 @@ class GemmaService : Service() {
         stopDiscovery() // clean start
         discoveryListener = object : NsdManager.DiscoveryListener {
             override fun onDiscoveryStarted(regType: String) {
-                Log.d("BayanihanNode", "NSD Discovery started")
+                Log.d(TAG, "NSD Discovery started")
             }
 
             override fun onServiceFound(service: NsdServiceInfo) {
-                Log.d("BayanihanNode", "Service found: ${service.serviceName} type: ${service.serviceType}")
+                Log.d(TAG, "Service found: ${service.serviceName} type: ${service.serviceType}")
                 val nameMatch = service.serviceName.contains(TARGET_SERVICE_NAME, ignoreCase = true)
                 val typeMatch = service.serviceType.contains(SERVICE_TYPE)
                 
                 if (nameMatch && typeMatch) {
                     nsdManager?.resolveService(service, object : NsdManager.ResolveListener {
                         override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-                            Log.e("BayanihanNode", "Resolve failed: $errorCode")
+                            Log.e(TAG, "Resolve failed: $errorCode")
                         }
 
                         override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-                            val host = serviceInfo.host.hostAddress
+                            val host = serviceInfo.host?.hostAddress
                             val port = serviceInfo.port
-                            Log.i("BayanihanNode", "Resolved central server: $host:$port")
-                            registerWithCentralServer(host, port)
+                            if (host != null) {
+                                Log.i(TAG, "Resolved central server: $host:$port")
+                                registerWithCentralServer(host, port)
+                            }
                         }
                     })
                 }
             }
 
             override fun onServiceLost(service: NsdServiceInfo) {
-                Log.d("BayanihanNode", "Service lost: ${service.serviceName}")
+                Log.d(TAG, "Service lost: ${service.serviceName}")
             }
 
             override fun onDiscoveryStopped(serviceType: String) {
-                Log.i("BayanihanNode", "Discovery stopped.")
+                Log.i(TAG, "Discovery stopped.")
             }
 
             override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-                Log.e("BayanihanNode", "Discovery failed: $errorCode")
+                Log.e(TAG, "Discovery failed: $errorCode")
                 stopDiscovery()
             }
 
             override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-                Log.e("BayanihanNode", "Stop discovery failed: $errorCode")
+                Log.e(TAG, "Stop discovery failed: $errorCode")
                 stopDiscovery()
             }
         }
@@ -225,7 +204,7 @@ class GemmaService : Service() {
             try {
                 nsdManager?.stopServiceDiscovery(it)
             } catch (e: Exception) {
-                Log.e("BayanihanNode", "Error stopping NSD: ${e.message}")
+                Log.e(TAG, "Error stopping NSD: ${e.message}")
             }
         }
         discoveryListener = null
@@ -235,7 +214,7 @@ class GemmaService : Service() {
         scope.launch {
             try {
                 val url = "http://$host:$port/api/nodes"
-                Log.i("BayanihanNode", "Registering with: $url")
+                Log.i(TAG, "Registering with: $url")
                 val conn = URL(url).openConnection() as HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.setRequestProperty("Content-Type", "application/json")
@@ -248,19 +227,12 @@ class GemmaService : Service() {
 
                 val code = conn.responseCode
                 if (code == 200) {
-                    val response = conn.inputStream.bufferedReader().use { it.readText() }
-                    val responseJson = JSONObject(response)
-                    val cachePrompt = responseJson.optString("cache_prompt", "")
-                    if (cachePrompt.isNotEmpty()) {
-                        Log.i("BayanihanNode", "Warming cache with prompt from server")
-                        LlamaEngine.warmCache(LlamaEngine.contextHandle, cachePrompt)
-                    }
-                    // Once registered, we can stop discovery
+                    // Registration success
                     stopDiscovery()
                 }
                 conn.disconnect()
             } catch (e: Exception) {
-                Log.e("BayanihanNode", "Failed to register with central server: ${e.message}")
+                Log.e(TAG, "Failed to register with central server: ${e.message}")
             }
         }
     }

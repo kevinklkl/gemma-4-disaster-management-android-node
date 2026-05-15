@@ -24,18 +24,16 @@ app/src/main/cpp/llama.cpp/
 **/.ninja_deps
 **/.ninja_log
 
-# Large Model files
+# Large Model files and temporary downloads
 *.gguf
 *.bin
+*.litertlm
+*.task
+*.tmp
 
 # Local configuration
 local.properties
-.idea/caches/
-.idea/libraries/
-.idea/modules.xml
-.idea/workspace.xml
-.idea/navEditor.xml
-.idea/assetWizardSettings.xml
+.idea/
 *.iml
 *.ipr
 *.iws
@@ -46,14 +44,9 @@ local.properties
 *.p12
 google-services.json
 
-# C++ / Native Build
-*.o
-*.so
-*.a
-*.pyc
-app/src/main/cpp/llama.cpp/
-
-# System files
+# System files and captures
 .DS_Store
 Thumbs.db
 capture.png
+captures/
+*.log
