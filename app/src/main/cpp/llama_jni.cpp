@@ -172,8 +172,10 @@ Java_com_bayanihan_node_LlamaEngine_generate(JNIEnv* env, jobject,
     llama_memory_t mem = llama_get_memory(ctx);
     if (mem) {
         if (g_prefix_n_tokens > 0) {
-            LOGI("Trimming KV cache to prefix (%d tokens)", g_prefix_n_tokens);
-            llama_memory_seq_rm(mem, 0, g_prefix_n_tokens, -1);
+            LOGI("Trimming KV cache: keeping prefix (%d tokens), removing suffix", g_prefix_n_tokens);
+            // Fix: remove tokens AFTER the prefix (from g_prefix_n_tokens to end)
+            // Sequence ID -1 means all sequences.
+            llama_memory_seq_rm(mem, g_prefix_n_tokens, -1, -1);
         } else {
             llama_memory_clear(mem, true);
         }

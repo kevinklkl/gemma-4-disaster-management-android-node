@@ -50,3 +50,4 @@ Thumbs.db
 capture.png
 captures/
 *.log
+*.hprof
