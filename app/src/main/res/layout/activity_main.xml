@@ -85,7 +85,16 @@
                     android:id="@+id/btnDownload"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Download model (≈1.8 GB)"
+                    android:text="Download model (≈2.6 GB)"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDelete"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete Model"
+                    android:textColor="?attr/colorError"
                     android:visibility="gone" />
 
             </LinearLayout>

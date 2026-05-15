@@ -1,2 +1,2 @@
--keep class com.bayanihan.node.LlamaEngine { *; }
--keepclassmembers class com.bayanihan.node.LlamaEngine { native <methods>; }
+# Proguard rules for Bayanihan Node
+-keep class com.google.mediapipe.tasks.genai.llminference.** { *; }

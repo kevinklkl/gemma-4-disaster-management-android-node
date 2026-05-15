@@ -1,6 +1,8 @@
 package com.bayanihan.node
 
 import android.app.ActivityManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
@@ -10,26 +12,26 @@ import android.os.Handler
 import android.os.Looper
 import android.text.format.Formatter
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bayanihan.node.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import java.io.*
-import java.net.HttpURLConnection
-import java.net.URL
 import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private var monitorJob: Job? = null
 
     companion object {
-        private const val MODEL_FILENAME = "gemma-4-E2B-it-Q5_K_S.gguf"
+        private const val MODEL_FILENAME = "gemma-4-E2B-it.litertlm"
         private const val MODEL_URL =
-            "https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/main/$MODEL_FILENAME"
-        private const val MIN_VALID_SIZE = 500_000_000L // 500 MB sanity check
+            "https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm/resolve/main/gemma-4-E2B-it.litertlm"
+        private const val MIN_VALID_SIZE = 1_000_000_000L // 1 GB minimum
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -45,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        createDownloadChannel()
         askNotificationPermission()
         checkRam()
         refreshModelStatus()
@@ -52,6 +55,26 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnDownload.setOnClickListener { startDownload() }
         binding.btnStartStop.setOnClickListener { toggleService() }
+        binding.btnDelete.setOnClickListener {
+            if (GemmaService.isRunning) {
+                Toast.makeText(this, "Stop the node before deleting the model", Toast.LENGTH_SHORT).show()
+            } else {
+                deleteModels()
+                refreshModelStatus()
+            }
+        }
+    }
+
+    private fun deleteModels() {
+        val dir = getExternalFilesDir(null) ?: return
+        dir.listFiles()?.forEach { file ->
+            val name = file.name.lowercase()
+            if (name.endsWith(".bin") || name.endsWith(".gguf") || 
+                name.endsWith(".task") || name.endsWith(".litertlm") || name.endsWith(".tmp")) {
+                file.delete()
+            }
+        }
+        Toast.makeText(this, "All model files deleted", Toast.LENGTH_SHORT).show()
     }
 
     private fun askNotificationPermission() {
@@ -65,7 +88,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        refreshModelStatus()
         refreshServiceStatus()
+        if (ModelDownloadService.isRunning) {
+            monitorDownloadProgress()
+        }
     }
 
     override fun onDestroy() {
@@ -88,6 +115,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun createDownloadChannel() {
+        val ch = NotificationChannel(ModelDownloadService.CHANNEL_ID, "Downloads", NotificationManager.IMPORTANCE_LOW)
+        getSystemService(NotificationManager::class.java).createNotificationChannel(ch)
+    }
+
     // ── model status ──────────────────────────────────────────────────────────
 
     private fun modelFile() = File(getExternalFilesDir(null), MODEL_FILENAME)
@@ -99,9 +131,11 @@ class MainActivity : AppCompatActivity() {
             val gb = DecimalFormat("#.##").format(f.length() / 1_000_000_000.0)
             binding.tvModelStatus.text = "Model: ready ($gb GB)"
             binding.btnDownload.visibility = View.GONE
+            binding.btnDelete.visibility = View.VISIBLE
         } else {
             binding.tvModelStatus.text = "Model: not downloaded"
             binding.btnDownload.visibility = View.VISIBLE
+            binding.btnDelete.visibility = View.GONE
         }
         binding.btnStartStop.isEnabled = ready
     }
@@ -109,7 +143,7 @@ class MainActivity : AppCompatActivity() {
     // ── service controls ─────────────────────────────────────────────────────
 
     private fun refreshServiceStatus() {
-        if (LlamaService.isRunning) {
+        if (GemmaService.isRunning) {
             binding.btnStartStop.text = "Stop Node"
             binding.tvServiceStatus.text = "Status: Running on :11434"
             binding.tvIpAddress.text = "LAN address: ${getLocalIp()}:11434"
@@ -121,12 +155,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toggleService() {
-        if (LlamaService.isRunning) {
-            startService(Intent(this, LlamaService::class.java).apply {
-                action = LlamaService.ACTION_STOP
+        if (GemmaService.isRunning) {
+            startService(Intent(this, GemmaService::class.java).apply {
+                action = GemmaService.ACTION_STOP
             })
         } else {
-            startForegroundService(Intent(this, LlamaService::class.java))
+            startForegroundService(Intent(this, GemmaService::class.java))
         }
         Handler(Looper.getMainLooper()).postDelayed({ refreshServiceStatus() }, 600)
     }
@@ -134,63 +168,38 @@ class MainActivity : AppCompatActivity() {
     // ── download ──────────────────────────────────────────────────────────────
 
     private fun startDownload() {
+        val intent = Intent(this, ModelDownloadService::class.java).apply {
+            putExtra("url", MODEL_URL)
+            putExtra("path", modelFile().absolutePath)
+        }
+        startForegroundService(intent)
+        monitorDownloadProgress()
+    }
+
+    private fun monitorDownloadProgress() {
+        monitorJob?.cancel()
         binding.btnDownload.isEnabled = false
         binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.isIndeterminate = false
-
-        scope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    downloadModel { progress, dlMb, totalMb ->
-                        launch(Dispatchers.Main) {
-                            binding.progressBar.progress = progress
-                            binding.tvModelStatus.text = "Downloading: $dlMb / $totalMb MB"
-                        }
-                    }
-                    launch(Dispatchers.Main) {
-                        binding.progressBar.visibility = View.GONE
-                        refreshModelStatus()
-                    }
-                } catch (e: Exception) {
-                    launch(Dispatchers.Main) {
-                        binding.tvModelStatus.text = "Download failed: ${e.message}"
-                        binding.btnDownload.isEnabled = true
-                        binding.progressBar.visibility = View.GONE
-                    }
-                }
+        
+        monitorJob = scope.launch {
+            while (ModelDownloadService.isRunning) {
+                binding.progressBar.isIndeterminate = ModelDownloadService.progress == 0
+                binding.progressBar.progress = ModelDownloadService.progress
+                binding.tvModelStatus.text = "Downloading: ${ModelDownloadService.downloadedMb} / ${ModelDownloadService.totalMb} MB"
+                delay(1000)
             }
+            
+            if (ModelDownloadService.error != null) {
+                binding.tvModelStatus.text = "Download failed: ${ModelDownloadService.error}"
+                binding.btnDownload.isEnabled = true
+            } else {
+                refreshModelStatus()
+            }
+            binding.progressBar.visibility = View.GONE
         }
     }
 
-    private fun downloadModel(onProgress: (progress: Int, dlMb: Int, totalMb: Int) -> Unit) {
-        val dest = modelFile()
-        val tmp  = File(dest.parent, "${dest.name}.tmp")
-        val existingBytes = if (tmp.exists()) tmp.length() else 0L
-
-        val conn = URL(MODEL_URL).openConnection() as HttpURLConnection
-        conn.connectTimeout = 15_000
-        conn.readTimeout    = 60_000
-        if (existingBytes > 0) conn.setRequestProperty("Range", "bytes=$existingBytes-")
-        conn.connect()
-
-        val remoteLen  = conn.contentLengthLong
-        val totalBytes = if (existingBytes > 0 && remoteLen > 0) existingBytes + remoteLen else remoteLen
-
-        FileOutputStream(tmp, existingBytes > 0).use { out ->
-            conn.inputStream.use { input ->
-                val buf = ByteArray(128 * 1024)
-                var downloaded = existingBytes
-                var n: Int
-                while (input.read(buf).also { n = it } >= 0) {
-                    out.write(buf, 0, n)
-                    downloaded += n
-                    val pct = if (totalBytes > 0) ((downloaded * 100) / totalBytes).toInt() else 0
-                    onProgress(pct, (downloaded / 1_000_000).toInt(), (totalBytes / 1_000_000).toInt())
-                }
-            }
-        }
-        tmp.renameTo(dest)
-    }
+    // (Old manual download functions removed)
 
     // ── helpers ───────────────────────────────────────────────────────────────
 

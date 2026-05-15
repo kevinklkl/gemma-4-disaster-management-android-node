@@ -17,28 +17,16 @@ android {
         ndk {
             abiFilters += listOf("arm64-v8a")
         }
-
-        externalNativeBuild {
-            cmake {
-                cppFlags += "-std=c++17"
-                arguments += listOf(
-                    "-DANDROID_STL=c++_shared",
-                    "-DGGML_VULKAN=OFF",
-                    "-DLLAMA_CURL=OFF",
-                    "-DLLAMA_BUILD_TESTS=OFF",
-                    "-DLLAMA_BUILD_EXAMPLES=OFF",
-                    "-DLLAMA_BUILD_SERVER=OFF",
-                )
-            }
-        }
     }
 
+    /*
     externalNativeBuild {
         cmake {
             path = file("CMakeLists.txt")
             version = "3.22.1"
         }
     }
+    */
 
     buildFeatures {
         viewBinding = true
@@ -55,7 +43,7 @@ android {
 
     packaging {
         jniLibs {
-            useLegacyPackaging = true
+            useLegacyPackaging = false
         }
     }
 }
@@ -67,4 +55,5 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation("com.google.mediapipe:tasks-genai:0.10.35")
 }

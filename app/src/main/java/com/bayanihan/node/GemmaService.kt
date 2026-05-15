@@ -4,10 +4,11 @@ import android.app.*
 import android.content.*
 import android.net.wifi.WifiManager
 import android.os.*
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
 
-class LlamaService : Service() {
+class GemmaService : Service() {
 
     private var server: OllamaServer? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -16,6 +17,7 @@ class LlamaService : Service() {
     private var wifiLock: WifiManager.WifiLock? = null
 
     companion object {
+        private const val TAG = "GemmaService"
         const val NOTIFICATION_ID = 1
         const val CHANNEL_ID = "bayanihan_node"
         const val ACTION_STOP = "com.bayanihan.node.STOP"
@@ -39,18 +41,35 @@ class LlamaService : Service() {
         isRunning = true
         registerThermal()
 
-        scope.launch {
-            val modelFile = getExternalFilesDir(null)?.absolutePath + "/gemma-4-E2B-it-Q5_K_S.gguf"
-            notify("Loading model…")
+        // Start server immediately so it can respond even if model is still loading
+        try {
+            server = OllamaServer(11434).also { it.start() }
+            Log.i(TAG, "Ollama Server started on :11434")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start server: ${e.message}")
+            notify("Server Error: ${e.message}")
+        }
 
-            val ok = LlamaEngine.load(modelFile, nGpuLayers = 0)
+        scope.launch {
+            val modelFile = getExternalFilesDir(null)?.absolutePath + "/gemma-4-E2B-it.litertlm"
+            Log.i(TAG, "Attempting to load model from: $modelFile")
+            notify("Loading model (this takes ~1 min)…")
+
+            val ok = try {
+                GemmaEngine.load(this@GemmaService, modelFile)
+            } catch (e: Exception) {
+                Log.e(TAG, "Critical load error: ${e.message}")
+                false
+            }
+
             if (!ok) {
-                notify("Failed to load model — check file exists")
-                stopSelf()
+                Log.e(TAG, "GemmaEngine failed to load")
+                notify("Failed to load model — check logs")
+                // Don't stopSelf immediately, let the server stay up to report the error if hit
                 return@launch
             }
 
-            server = OllamaServer(11434).also { it.start() }
+            Log.i(TAG, "Model loaded successfully.")
             wakeLock?.acquire(4 * 60 * 60 * 1000L)
             wifiLock?.acquire()
             notify("Ready — serving on :11434")
@@ -62,7 +81,7 @@ class LlamaService : Service() {
         isRunning = false
         scope.cancel()
         server?.stop()
-        LlamaEngine.unload()
+        GemmaEngine.unload()
         thermalReceiver?.let { unregisterReceiver(it) }
         if (wakeLock?.isHeld == true) wakeLock?.release()
         if (wifiLock?.isHeld == true) wifiLock?.release()
@@ -81,7 +100,7 @@ class LlamaService : Service() {
                 server?.thermalThrottle = throttle
                 val status = when {
                     throttle -> "Cooling down (${tempC.toInt()}°C) — requests paused"
-                    LlamaEngine.isLoaded -> "Ready — serving on :11434"
+                    GemmaEngine.isLoaded -> "Ready — serving on :11434"
                     else -> "Loading…"
                 }
                 notify(status)
@@ -98,7 +117,7 @@ class LlamaService : Service() {
     private fun buildNotification(status: String): Notification {
         val stopPi = PendingIntent.getService(
             this, 0,
-            Intent(this, LlamaService::class.java).apply { action = ACTION_STOP },
+            Intent(this, GemmaService::class.java).apply { action = ACTION_STOP },
             PendingIntent.FLAG_IMMUTABLE
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)

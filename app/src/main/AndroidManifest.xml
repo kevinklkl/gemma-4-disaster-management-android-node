@@ -26,7 +26,12 @@
         </activity>
 
         <service
-            android:name=".LlamaService"
+            android:name=".GemmaService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
+        <service
+            android:name=".ModelDownloadService"
             android:foregroundServiceType="dataSync"
             android:exported="false" />
 
