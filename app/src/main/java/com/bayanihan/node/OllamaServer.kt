@@ -64,6 +64,7 @@ class OllamaServer(port: Int = 11434) : NanoHTTPD(port) {
             ?: return newFixedLengthResponse(Response.Status.BAD_REQUEST, "application/json",
                 """{"error":"missing prompt"}""")
 
+<<<<<<< Updated upstream
         Log.i(TAG, "Prompt: $prompt")
 
         val startNs   = System.nanoTime()
@@ -74,6 +75,17 @@ class OllamaServer(port: Int = 11434) : NanoHTTPD(port) {
                 Log.e(TAG, "Inference error: ${e.message}")
                 "Error during inference: ${e.message}"
             }
+=======
+        val opts      = json.getAsJsonObject("options")
+        val temp      = opts?.get("temperature")?.asFloat  ?: 1.0f
+        val topP      = opts?.get("top_p")?.asFloat        ?: 0.95f
+        val topK      = opts?.get("top_k")?.asInt          ?: 40
+        val maxTokens = opts?.get("num_predict")?.asInt    ?: 512
+
+        val startNs   = System.nanoTime()
+        val response  = synchronized(inferLock) {
+            LlamaEngine.generate(LlamaEngine.contextHandle, prompt, temp, topP, topK, maxTokens)
+>>>>>>> Stashed changes
         }
         val durationNs = System.nanoTime() - startNs
         Log.i(TAG, "Response generated in ${durationNs / 1_000_000}ms")
@@ -86,6 +98,8 @@ class OllamaServer(port: Int = 11434) : NanoHTTPD(port) {
             addProperty("response", response)
             addProperty("done", true)
             addProperty("total_duration", durationNs)
+            addProperty("load_duration", 0L)
+            addProperty("prompt_eval_duration", 0L)
             addProperty("eval_duration", durationNs)
             addProperty("eval_count", evalCount)
             addProperty("prompt_eval_count", prompt.length / 4)

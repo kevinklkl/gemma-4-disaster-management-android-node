@@ -46,6 +46,13 @@ local.properties
 *.p12
 google-services.json
 
+# C++ / Native Build
+*.o
+*.so
+*.a
+*.pyc
+app/src/main/cpp/llama.cpp/
+
 # System files
 .DS_Store
 Thumbs.db

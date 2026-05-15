@@ -1,24 +1,41 @@
 package com.bayanihan.node
 
 import android.app.ActivityManager
+<<<<<<< Updated upstream
 import android.app.NotificationChannel
 import android.app.NotificationManager
+=======
+import android.content.Context
+>>>>>>> Stashed changes
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.wifi.WifiManager
+import android.net.ConnectivityManager
+import android.net.LinkProperties
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.format.Formatter
 import android.view.View
 import android.widget.Toast
+<<<<<<< Updated upstream
+=======
+import androidx.activity.enableEdgeToEdge
+>>>>>>> Stashed changes
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.bayanihan.node.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import java.io.*
+<<<<<<< Updated upstream
+=======
+import java.net.HttpURLConnection
+import java.net.Inet4Address
+import java.net.URL
+>>>>>>> Stashed changes
 import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity() {
@@ -43,11 +60,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+<<<<<<< Updated upstream
         createDownloadChannel()
+=======
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+>>>>>>> Stashed changes
         askNotificationPermission()
         checkRam()
         refreshModelStatus()
@@ -56,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnDownload.setOnClickListener { startDownload() }
         binding.btnStartStop.setOnClickListener { toggleService() }
         binding.btnDelete.setOnClickListener {
+<<<<<<< Updated upstream
             if (GemmaService.isRunning) {
                 Toast.makeText(this, "Stop the node before deleting the model", Toast.LENGTH_SHORT).show()
             } else {
@@ -75,6 +103,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
         Toast.makeText(this, "All model files deleted", Toast.LENGTH_SHORT).show()
+=======
+            if (LlamaService.isRunning) {
+                Toast.makeText(this, "Stop the node before deleting the model", Toast.LENGTH_SHORT).show()
+            } else {
+                modelFile().delete()
+                refreshModelStatus()
+            }
+        }
+>>>>>>> Stashed changes
     }
 
     private fun askNotificationPermission() {
@@ -203,10 +240,16 @@ class MainActivity : AppCompatActivity() {
 
     // ── helpers ───────────────────────────────────────────────────────────────
 
-    @Suppress("DEPRECATION")
     private fun getLocalIp(): String {
-        val wm = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-        val ip = wm.connectionInfo.ipAddress
-        return if (ip == 0) "check WiFi" else Formatter.formatIpAddress(ip)
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = cm.activeNetwork ?: return "check connection"
+        val lp = cm.getLinkProperties(network) ?: return "check connection"
+        for (addr in lp.linkAddresses) {
+            val inet = addr.address
+            if (!inet.isLoopbackAddress && inet is Inet4Address) {
+                return inet.hostAddress ?: ""
+            }
+        }
+        return "check connection"
     }
 }
