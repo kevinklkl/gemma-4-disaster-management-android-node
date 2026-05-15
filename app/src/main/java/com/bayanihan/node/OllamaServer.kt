@@ -5,10 +5,14 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import fi.iki.elonen.NanoHTTPD
 
-class OllamaServer(port: Int = 11434) : NanoHTTPD(port) {
+class OllamaServer(port: Int = 11434) : NanoHTTPD("0.0.0.0", port) {
 
     companion object {
         private const val TAG = "OllamaServer"
+    }
+
+    init {
+        Log.i(TAG, "OllamaServer initialized on 0.0.0.0:11434")
     }
 
     // Set by GemmaService's thermal broadcast receiver
@@ -25,6 +29,15 @@ class OllamaServer(port: Int = 11434) : NanoHTTPD(port) {
             }
             session.method == Method.POST && session.uri == "/api/generate" -> handleGenerate(session)
             session.method == Method.GET  && session.uri == "/api/tags"     -> handleTags()
+            session.uri.startsWith("/api/blobs") -> {
+                // Return 200 OK for any blob request to tell the backend we "have" the data
+                Log.i(TAG, "Stubbing blob request: ${session.uri}")
+                newFixedLengthResponse(Response.Status.OK, "application/json", """{"status":"exists"}""")
+            }
+            session.method == Method.POST && session.uri == "/api/show" -> {
+                val body = """{"modelfile":"# Bayanihan Gemma 4 Node\nFROM gemma-4-e2b","parameters":"stop \"<end_of_turn>\"","template":"{{ .Prompt }}"}"""
+                newFixedLengthResponse(Response.Status.OK, "application/json", body)
+            }
             else -> {
                 Log.w(TAG, "Route not found: ${session.uri}")
                 newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not found")
