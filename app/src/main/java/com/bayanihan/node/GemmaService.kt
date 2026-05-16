@@ -33,6 +33,7 @@ class GemmaService : Service() {
         const val CHANNEL_ID = "bayanihan_node"
         const val ACTION_STOP = "com.bayanihan.node.STOP"
         @Volatile var isRunning = false
+        @Volatile var centralServerUrl: String? = null
     }
 
     override fun onCreate() {
@@ -119,6 +120,7 @@ class GemmaService : Service() {
                 if (intent.action != Intent.ACTION_BATTERY_CHANGED) return
                 // Android reports temperature in tenths of a degree
                 val tempC = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10.0
+                NodeStats.setTemp(tempC)
                 // Lower threshold to 41°C to stay ahead of aggressive system-level GPU throttling
                 val throttle = tempC >= 41.0
                 server?.thermalThrottle = throttle
@@ -261,6 +263,7 @@ class GemmaService : Service() {
                         Log.e(TAG, "Failed to parse registration response: ${e.message}")
                     }
 
+                    centralServerUrl = "http://$host:$port"
                     stopDiscovery()
                 } else {
                     Log.w(TAG, "Registration failed with code: $code")

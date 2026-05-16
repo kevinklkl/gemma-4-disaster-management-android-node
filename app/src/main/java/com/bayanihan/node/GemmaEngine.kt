@@ -15,15 +15,16 @@ object GemmaEngine {
     
     init {
         try {
-            // Fix: Pre-load LiteRt to resolve symbols for GPU samplers
+            // Pre-load core LiteRT and JNI libraries to prevent "No implementation found" errors
             System.loadLibrary("LiteRt")
-            Log.i(TAG, "Successfully pre-loaded libLiteRt.so")
+            System.loadLibrary("litertlm_jni")
+            Log.i(TAG, "Successfully pre-loaded libLiteRt.so and liblitertlm_jni.so")
             
-            // Try to pre-load samplers to ensure they are available in memory
+            // Try to pre-load optional GPU samplers
             try { System.loadLibrary("LiteRtTopKWebGpuSampler") } catch (e: Throwable) {}
             try { System.loadLibrary("LiteRtTopKOpenClSampler") } catch (e: Throwable) {}
         } catch (e: UnsatisfiedLinkError) {
-            Log.w(TAG, "Core libraries not found in APK, relying on AAR auto-loading: ${e.message}")
+            Log.w(TAG, "Native libraries not found in APK: ${e.message}")
         }
     }
 

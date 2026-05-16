@@ -50,4 +50,6 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.mediapipeTasksGenai)
     implementation(libs.litert.lm)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.okhttp)
 }

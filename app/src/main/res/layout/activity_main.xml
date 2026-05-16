@@ -1,148 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="@color/akbay_paper"
+    android:orientation="vertical">
 
+    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="64dp"
+        android:background="@color/akbay_header"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-            android:layout_marginBottom="4dp" />
+            android:text="akbay"
+            android:textColor="@color/akbay_paper"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/tvStepIndicator"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ollama-compatible inference node"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginBottom="20dp" />
-
-        <!-- RAM warning (hidden unless < 4 GB) -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/tvRamWarning"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="?attr/colorErrorContainer"
-            app:strokeWidth="0dp">
-
-            <TextView
-                android:id="@+id/tvRamWarningText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:textColor="?attr/colorOnErrorContainer"
-                android:textAppearance="?attr/textAppearanceBodySmall" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Model card -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Model"
-                    android:textAppearance="?attr/textAppearanceTitleMedium"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvModelStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Checking…"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:layout_marginBottom="12dp" />
-
-                <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/progressBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:max="100"
-                    android:layout_marginBottom="12dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnDownload"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Download model (≈2.6 GB)"
-                    android:visibility="gone" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnDelete"
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Delete Model"
-                    android:textColor="?attr/colorError"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Service card -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Node Service"
-                    android:textAppearance="?attr/textAppearanceTitleMedium"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvServiceStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Status: Stopped"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
-                    android:id="@+id/tvIpAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_marginBottom="16dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnStartStop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Start Node"
-                    android:enabled="false" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
+            android:background="@drawable/pill_background"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:text="Step 1/3"
+            android:textColor="@color/akbay_paper"
+            android:textSize="12sp" />
     </LinearLayout>
-</ScrollView>
+
+    <!-- Onboarding State -->
+    <FrameLayout
+        android:id="@+id/onboardingContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <ViewFlipper
+            android:id="@+id/viewFlipper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- STEP 1: Welcome -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="32dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome to Akbay"
+                    android:textColor="@color/akbay_ink"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:text="Thank you for downloading our app. To contribute to our network we will guide you through the steps."
+                    android:textColor="@color/akbay_ash"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNextStep1"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="48dp"
+                    android:text="Get Started"
+                    app:backgroundTint="@color/akbay_primary"
+                    app:cornerRadius="12dp" />
+            </LinearLayout>
+
+            <!-- STEP 2: Download -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="32dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Download AI Model"
+                    android:textColor="@color/akbay_ink"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:text="To help in disaster areas, this node runs AI completely offline. We need to download a ~2.6GB model to your device.\n\nYou can minimize the app, but please do not close it until the download is finished."
+                    android:textColor="@color/akbay_ash"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardDownloadProgress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/akbay_card"
+                    app:strokeColor="@color/akbay_divider"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
+                            android:id="@+id/downloadProgress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:trackColor="@color/akbay_divider"
+                            app:indicatorColor="@color/akbay_primary"
+                            app:trackThickness="8dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvDownloadStatus"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="0 / 0 MB"
+                                android:textColor="@color/akbay_ash"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tvTimeRemaining"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Estimating..."
+                                android:textColor="@color/akbay_ash"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnStartDownload"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="48dp"
+                    android:text="Download Now"
+                    app:backgroundTint="@color/akbay_primary"
+                    app:cornerRadius="12dp" />
+            </LinearLayout>
+        </ViewFlipper>
+    </FrameLayout>
+
+    <!-- App State -->
+    <RelativeLayout
+        android:id="@+id/appContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:id="@+id/fragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottomNav" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/akbay_header"
+            app:itemIconTint="@color/akbay_nav_inactive"
+            app:itemTextColor="@color/akbay_nav_inactive"
+            app:menu="@menu/nav_bottom" />
+    </RelativeLayout>
+
+</LinearLayout>

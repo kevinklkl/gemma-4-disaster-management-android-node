@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="akbay_paper">#F4F0E6</color>
+    <color name="akbay_ink">#1A1C1E</color>
+    <color name="akbay_ash">#606266</color>
+    <color name="akbay_primary">#E19A5B</color>
+    <color name="akbay_header">#102B2D</color>
+    <color name="akbay_card">#EFEAE0</color>
+    <color name="akbay_divider">#E2DDD2</color>
+    <color name="akbay_bone">#FBF6E8</color>
+    <color name="akbay_paper_warm">#ECE1C7</color>
+    <color name="akbay_nav_inactive">#99FBF6E8</color>
+    <color name="akbay_tabang">#A8302E</color>
+    <color name="akbay_signal">#D9622A</color>
+    <color name="akbay_damay">#386B4A</color>
+    <color name="akbay_araw">#E08A1E</color>
+</resources>

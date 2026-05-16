@@ -1,3 +1,12 @@
-<resources>
-    <style name="Theme.BayanihanNode" parent="Theme.Material3.DayNight.NoActionBar" />
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.BayanihanNode" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowBackground">@color/akbay_paper</item>
+        <item name="colorPrimary">@color/akbay_header</item>
+        <item name="colorOnPrimary">@color/akbay_paper</item>
+        <item name="colorSurface">@color/akbay_paper</item>
+        <item name="colorOnSurface">@color/akbay_ink</item>
+        <item name="colorSurfaceVariant">@color/akbay_card</item>
+        <item name="colorOnSurfaceVariant">@color/akbay_ink</item>
+        <item name="colorOutline">@color/akbay_divider</item>
+    </style>
 </resources>

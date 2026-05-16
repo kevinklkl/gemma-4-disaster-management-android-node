@@ -134,7 +134,7 @@ class OllamaServer(port: Int = 11434) : NanoHTTPD("0.0.0.0", port) {
             try {
                 // If it's a long prompt with instructions, use the warm session for KV cache reuse
                 val systemMarker = "TASK:"
-                if (sanitizedPrompt.contains(systemMarker)) {
+                val result = if (sanitizedPrompt.contains(systemMarker)) {
                     val parts = sanitizedPrompt.split(systemMarker, limit = 2)
                     val systemInstructions = parts[0].trim()
                     val taskData = systemMarker + " " + parts[1].trim()
@@ -151,8 +151,11 @@ class OllamaServer(port: Int = 11434) : NanoHTTPD("0.0.0.0", port) {
                 } else {
                     GemmaEngine.generate(formattedPrompt)
                 }
+                NodeStats.addRequest(true)
+                result
             } catch (e: Exception) {
                 Log.e(TAG, "Inference error: ${e.message}")
+                NodeStats.addRequest(false)
                 GemmaEngine.GenerationResult("Error during inference: ${e.message}", 0, 0, 0)
             }
         }
@@ -163,6 +166,7 @@ class OllamaServer(port: Int = 11434) : NanoHTTPD("0.0.0.0", port) {
 
         // Accurate token count from engine
         val evalCount = genResult.tokenCount
+        NodeStats.addTokens(evalCount)
 
         // Fix JSON output enforcement (Point #3)
         val shouldBeJson = json.get("format")?.asString == "json"
