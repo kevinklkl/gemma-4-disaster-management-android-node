@@ -193,8 +193,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/akbay_header"
-            app:itemIconTint="@color/akbay_nav_inactive"
-            app:itemTextColor="@color/akbay_nav_inactive"
+            app:itemIconTint="@color/nav_item_tint"
+            app:itemTextColor="@color/nav_item_tint"
             app:menu="@menu/nav_bottom" />
     </RelativeLayout>
 

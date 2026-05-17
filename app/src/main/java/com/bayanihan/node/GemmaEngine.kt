@@ -71,8 +71,6 @@ object GemmaEngine {
         }
     }
 
-    private var requestCount = 0
-
     data class GenerationResult(
         val text: String,
         val prefillTimeMs: Long,
@@ -87,15 +85,8 @@ object GemmaEngine {
         var tokenCount = 0
         val fullResponse = StringBuilder()
         
-        requestCount++
-        
         synchronized(inferenceLock) {
             val currentEngine = engine ?: return GenerationResult("Engine not loaded", 0, 0, 0)
-            
-            if (requestCount % 10 == 0) {
-                Log.i(TAG, "Periodic engine reset to clear KV cache accumulation")
-                currentEngine.initialize()
-            }
 
             val conversation = currentEngine.createConversation()
             try {

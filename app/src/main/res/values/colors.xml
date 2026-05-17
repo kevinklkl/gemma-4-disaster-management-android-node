@@ -1,17 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="akbay_paper">#F4F0E6</color>
-    <color name="akbay_ink">#1A1C1E</color>
-    <color name="akbay_ash">#606266</color>
-    <color name="akbay_primary">#E19A5B</color>
-    <color name="akbay_header">#102B2D</color>
-    <color name="akbay_card">#EFEAE0</color>
+    <!-- Paper / surface -->
+    <color name="akbay_paper">#F4ECD8</color>
+    <color name="akbay_paper_warm">#ECE1C7</color>
+    <color name="akbay_paper_edge">#D4C49F</color>
+    <color name="akbay_card">#ECE1C7</color>
     <color name="akbay_divider">#E2DDD2</color>
     <color name="akbay_bone">#FBF6E8</color>
-    <color name="akbay_paper_warm">#ECE1C7</color>
-    <color name="akbay_nav_inactive">#99FBF6E8</color>
-    <color name="akbay_tabang">#A8302E</color>
-    <color name="akbay_signal">#D9622A</color>
-    <color name="akbay_damay">#386B4A</color>
+
+    <!-- Ink / text -->
+    <color name="akbay_ink">#1A1C1E</color>
+    <color name="akbay_ink_soft">#2E3949</color>
+    <color name="akbay_ash">#6A645A</color>
+    <color name="akbay_smoke">#A89E8C</color>
+
+    <!-- Dagat (deep teal — nav / header / buttons) -->
+    <color name="akbay_dagat">#0E3138</color>
+    <color name="akbay_dagat_line">#1B4A52</color>
+    <!-- alias kept for existing references -->
+    <color name="akbay_header">#0E3138</color>
+
+    <!-- Primary: araw (amber) -->
+    <color name="akbay_primary">#E08A1E</color>
     <color name="akbay_araw">#E08A1E</color>
+    <color name="akbay_araw_soft">#F4D49C</color>
+    <color name="akbay_ember">#A8501A</color>
+
+    <!-- Urgency: signal (burnt orange) -->
+    <color name="akbay_signal">#D9622A</color>
+    <color name="akbay_signal_soft">#F5D4B8</color>
+
+    <!-- Urgency: tabang (deep red — critical) -->
+    <color name="akbay_tabang">#A8302E</color>
+    <color name="akbay_tabang_soft">#F0CFCD</color>
+
+    <!-- Positive: damay (green — covered / live) -->
+    <color name="akbay_damay">#386B4A</color>
+    <color name="akbay_damay_soft">#CCDDC9</color>
+
+    <!-- Nav -->
+    <color name="akbay_nav_inactive">#B3FBF6E8</color>
+    <color name="akbay_nav_indicator">#F4D49C</color>
 </resources>

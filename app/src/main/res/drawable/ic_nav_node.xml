@@ -7,7 +7,7 @@
     <!-- Server: top rack -->
     <path
         android:pathData="M3,6 Q3,4 5,4 L19,4 Q21,4 21,6 L21,10 Q21,12 19,12 L5,12 Q3,12 3,10 Z"
-        android:strokeColor="#FFFFFF"
+        android:strokeColor="@color/akbay_bone"
         android:strokeWidth="1.75"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
@@ -15,7 +15,7 @@
     <!-- Server: bottom rack -->
     <path
         android:pathData="M3,14 Q3,12 5,12 L19,12 Q21,12 21,14 L21,18 Q21,20 19,20 L5,20 Q3,20 3,18 Z"
-        android:strokeColor="#FFFFFF"
+        android:strokeColor="@color/akbay_bone"
         android:strokeWidth="1.75"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
@@ -23,22 +23,22 @@
     <!-- LED dot top rack -->
     <path
         android:pathData="M17,8 m-1,0 a1,1 0 1,0 2,0 a1,1 0 1,0 -2,0"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="@color/akbay_bone" />
     <!-- LED dot bottom rack -->
     <path
         android:pathData="M17,16 m-1,0 a1,1 0 1,0 2,0 a1,1 0 1,0 -2,0"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="@color/akbay_bone" />
     <!-- Status line top rack -->
     <path
         android:pathData="M7,8 L13,8"
-        android:strokeColor="#FFFFFF"
+        android:strokeColor="@color/akbay_bone"
         android:strokeWidth="1.5"
         android:strokeLineCap="round"
         android:fillColor="@android:color/transparent" />
     <!-- Status line bottom rack -->
     <path
         android:pathData="M7,16 L13,16"
-        android:strokeColor="#FFFFFF"
+        android:strokeColor="@color/akbay_bone"
         android:strokeWidth="1.5"
         android:strokeLineCap="round"
         android:fillColor="@android:color/transparent" />

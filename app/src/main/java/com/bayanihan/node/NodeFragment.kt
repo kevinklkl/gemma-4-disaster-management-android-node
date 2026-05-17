@@ -42,6 +42,7 @@ class NodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         checkRam()
         observeStats()
+        observeNodeState()
 
         binding.btnStartStop.setOnClickListener { toggleService() }
         binding.btnDelete.setOnClickListener {
@@ -105,28 +106,57 @@ class NodeFragment : Fragment() {
         }
     }
 
+    private fun observeNodeState() {
+        lifecycleScope.launch {
+            GemmaService.nodeState.collect {
+                refreshServiceStatus()
+            }
+        }
+    }
+
     fun refreshServiceStatus() {
         if (_binding == null) return
-        if (GemmaService.isRunning) {
-            binding.btnStartStop.text = "Stop Node"
-            binding.tvServiceStatus.text = "Status: Running on :11434"
-            binding.tvIpAddress.text = "LAN address: ${getLocalIp()}:11434"
-        } else {
-            binding.btnStartStop.text = "Start Node"
-            binding.tvServiceStatus.text = "Status: Stopped"
-            binding.tvIpAddress.text = "Click start to begin serving"
+        val context = requireContext()
+        when (GemmaService.nodeState.value) {
+            GemmaService.NodeState.RUNNING -> {
+                binding.btnStartStop.isEnabled = true
+                binding.btnStartStop.text = "Stop Node"
+                binding.btnStartStop.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.akbay_paper))
+                binding.tvServiceStatus.text = "Status: Running on :11434"
+                binding.tvIpAddress.text = "LAN address: ${getLocalIp()}:11434"
+            }
+            GemmaService.NodeState.LOADING -> {
+                binding.btnStartStop.isEnabled = false
+                binding.btnStartStop.text = "Loading..."
+                // Force white/paper text even when disabled
+                binding.btnStartStop.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.akbay_paper))
+                binding.tvServiceStatus.text = "Status: Initializing model..."
+                binding.tvIpAddress.text = "Please wait ~1 minute"
+            }
+            GemmaService.NodeState.STOPPED -> {
+                binding.btnStartStop.isEnabled = true
+                binding.btnStartStop.text = "Start Node"
+                binding.btnStartStop.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.akbay_paper))
+                binding.tvServiceStatus.text = "Status: Stopped"
+                binding.tvIpAddress.text = "Click start to begin serving"
+            }
         }
     }
 
     private fun toggleService() {
-        if (GemmaService.isRunning) {
+        if (GemmaService.isNodeActive || GemmaService.isNodeLoading) {
             requireContext().startService(
-                Intent(requireContext(), GemmaService::class.java).apply { action = GemmaService.ACTION_STOP }
+                Intent(requireContext(), GemmaService::class.java).apply { action = GemmaService.ACTION_STOP_NODE }
             )
         } else {
-            requireContext().startForegroundService(Intent(requireContext(), GemmaService::class.java))
+            requireContext().startForegroundService(
+                Intent(requireContext(), GemmaService::class.java).apply { action = GemmaService.ACTION_START_NODE }
+            )
         }
-        Handler(Looper.getMainLooper()).postDelayed({ refreshServiceStatus() }, 600)
+        // Small delay to allow the service state to update
+        Handler(Looper.getMainLooper()).postDelayed({ 
+            if (isAdded) refreshServiceStatus() 
+        }, 500)
     }
 
     private fun deleteModels() {

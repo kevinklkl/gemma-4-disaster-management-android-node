@@ -1,7 +1,11 @@
 package com.bayanihan.node
 
-import android.graphics.drawable.GradientDrawable
+import android.content.res.ColorStateList
+import android.graphics.Paint
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +21,8 @@ class PulsoAdapter(
     data class PulsoItem(
         val name: String,
         val quantity: String,
-        var isChecked: Boolean = false
+        var isChecked: Boolean = false,
+        var currentCount: String = "0"
     )
 
     data class PulsoMessage(
@@ -49,17 +54,17 @@ class PulsoAdapter(
         with(holder.binding) {
             tvOrderId.text = "ORD-${item.id.takeLast(4).uppercase()}"
             tvLastUpdated.text = formatTimeAgo(item.time)
-            tvLocation.text = item.location.ifEmpty { "Unknown" }
+            val loc = item.location.trim()
+            tvLocation.text = if (loc.isEmpty() || loc.lowercase() == "null") "Unknown" else loc
             tvPeopleCount.text = "${item.persons} people"
             tvSource.text = item.type
 
-            val color = urgencyColor(item.urgency, ctx)
-            val bg = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = 999f
-                setColor(color)
-            }
-            tvUrgencyBadge.background = bg
+            val (mainColor, softColor) = getUrgencyColors(item.urgency, ctx)
+            
+            urgencyBar.setBackgroundColor(mainColor)
+
+            tvUrgencyBadge.backgroundTintList = ColorStateList.valueOf(softColor)
+            tvUrgencyBadge.setTextColor(mainColor)
             tvUrgencyBadge.text = item.urgency.uppercase()
 
             // Items
@@ -67,18 +72,76 @@ class PulsoAdapter(
             item.itemsList.forEach { pulsoItem ->
                 val row = ItemPulsoInnerRowBinding.inflate(LayoutInflater.from(ctx), itemsContainer, false)
                 row.tvItemName.text = pulsoItem.name
-                row.tvItemQty.text = pulsoItem.quantity
+                row.tvTargetQty.text = pulsoItem.quantity
+                
+                // Set initial state
+                row.etItemQty.tag = "binding"
+                val display = if (pulsoItem.currentCount == "0") "" else pulsoItem.currentCount
+                row.etItemQty.setText(display)
+                row.etItemQty.tag = null
+                
+                updateItemStyle(row, pulsoItem.isChecked)
+
                 row.checkBox.isChecked = pulsoItem.isChecked
                 row.checkBox.setOnCheckedChangeListener { _, isChecked ->
                     pulsoItem.isChecked = isChecked
+                    updateItemStyle(row, isChecked)
                     updateProgress(holder, item)
                 }
+                
+                // Allow unclicking by tapping the green check or the name
+                val toggleCheck = View.OnClickListener {
+                    row.checkBox.toggle()
+                }
+                row.ivChecked.setOnClickListener(toggleCheck)
+                row.tvItemName.setOnClickListener(toggleCheck)
+
+                row.etItemQty.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable?) {
+                        if (row.etItemQty.tag == "binding") return
+                        
+                        val input = s?.toString() ?: ""
+                        pulsoItem.currentCount = input.ifEmpty { "0" }
+                        
+                        val current = input.toIntOrNull() ?: 0
+                        val targetNum = pulsoItem.quantity.split(" ").firstOrNull()?.toIntOrNull()
+                        
+                        if (targetNum == null) {
+                            if (current > 0 && !row.checkBox.isChecked) {
+                                row.checkBox.isChecked = true
+                            }
+                        } else {
+                            if (current >= targetNum && !row.checkBox.isChecked) {
+                                row.checkBox.isChecked = true
+                            }
+                        }
+
+                        updateProgress(holder, item)
+                    }
+                })
+
                 itemsContainer.addView(row.root)
             }
 
             updateProgress(holder, item)
 
             btnDispatch.setOnClickListener { onMarkDone(item.id) }
+        }
+    }
+
+    private fun updateItemStyle(row: ItemPulsoInnerRowBinding, isChecked: Boolean) {
+        if (isChecked) {
+            row.checkBox.visibility = View.GONE
+            row.ivChecked.visibility = View.VISIBLE
+            row.tvItemName.paintFlags = row.tvItemName.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            row.tvItemName.alpha = 0.5f
+        } else {
+            row.checkBox.visibility = View.VISIBLE
+            row.ivChecked.visibility = View.GONE
+            row.tvItemName.paintFlags = row.tvItemName.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            row.tvItemName.alpha = 1.0f
         }
     }
 
@@ -91,8 +154,21 @@ class PulsoAdapter(
         }
         val checked = item.itemsList.count { it.isChecked }
         val percent = (checked.toFloat() / total * 100).toInt()
+        
         holder.binding.progressBar.progress = percent
         holder.binding.tvProgressPercent.text = "$percent% +?"
+
+        if (percent == 100) {
+            holder.binding.btnDispatch.isEnabled = true
+            holder.binding.progressBar.progressTintList = ContextCompat.getColorStateList(holder.itemView.context, R.color.akbay_damay)
+            holder.binding.btnDispatch.text = "ready for dispatch"
+            holder.binding.btnDispatch.alpha = 1.0f
+        } else {
+            holder.binding.btnDispatch.isEnabled = checked > 0
+            holder.binding.btnDispatch.alpha = if (checked > 0) 1.0f else 0.5f
+            holder.binding.progressBar.progressTintList = ContextCompat.getColorStateList(holder.itemView.context, R.color.akbay_primary)
+            holder.binding.btnDispatch.text = "pack items to dispatch"
+        }
     }
 
     override fun getItemCount() = items.size
@@ -111,14 +187,25 @@ class PulsoAdapter(
         }
     }
 
-    private fun urgencyColor(urgency: String, ctx: android.content.Context): Int {
-        val resId = when (urgency.lowercase()) {
-            "critical"       -> R.color.akbay_tabang
-            "high", "urgent" -> R.color.akbay_signal
-            "low"            -> R.color.akbay_damay
-            else             -> R.color.akbay_ash
+    private fun getUrgencyColors(urgency: String, ctx: android.content.Context): Pair<Int, Int> {
+        val (mainRes, softRes) = when (urgency.lowercase()) {
+            "critical" -> 
+                Pair(R.color.akbay_tabang, R.color.akbay_tabang_soft)
+            "high", "urgent" -> 
+                Pair(R.color.akbay_signal, R.color.akbay_signal_soft)
+            "medium" -> 
+                Pair(R.color.akbay_araw, R.color.akbay_araw_soft)
+            "low" -> 
+                Pair(R.color.akbay_ash, R.color.akbay_divider) // divider as soft ash
+            "covered", "resolved", "done" -> 
+                Pair(R.color.akbay_damay, R.color.akbay_damay_soft)
+            else -> 
+                Pair(R.color.akbay_ash, R.color.akbay_divider)
         }
-        return ContextCompat.getColor(ctx, resId)
+        return Pair(
+            ContextCompat.getColor(ctx, mainRes),
+            ContextCompat.getColor(ctx, softRes)
+        )
     }
 
     private fun formatTimeAgo(iso: String): String {

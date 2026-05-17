@@ -1,33 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/item_row_bg"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingVertical="4dp">
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp">
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
-        android:buttonTint="@color/akbay_ash" />
+    <!-- Checkbox/Icon Container -->
+    <FrameLayout
+        android:layout_width="28dp"
+        android:layout_height="28dp">
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:buttonTint="@color/akbay_ash" />
+
+        <ImageView
+            android:id="@+id/ivChecked"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_checked_item"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tvItemName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:textColor="@color/akbay_ink"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
+
+    <!-- Editable Quantity -->
+    <EditText
+        android:id="@+id/etItemQty"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:gravity="end"
+        android:inputType="number"
+        android:maxLength="4"
+        android:hint="0"
+        android:textColorHint="#C4B79C"
+        android:textColor="@color/akbay_ink"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tvItemQty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/akbay_ash"
-        android:textSize="13sp" />
+        android:layout_marginStart="8dp"
+        android:text="/"
+        android:textColor="@color/akbay_smoke"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvTargetQty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="?"
+        android:textColor="@color/akbay_ink"
+        android:textSize="18sp" />
 
 </LinearLayout>

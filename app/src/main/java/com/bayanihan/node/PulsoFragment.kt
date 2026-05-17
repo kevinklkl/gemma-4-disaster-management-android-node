@@ -44,22 +44,35 @@ class PulsoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
+        setStatus("connecting", R.color.akbay_araw, R.color.akbay_araw_soft)
     }
 
     override fun onResume() {
         super.onResume()
-        val serverUrl = GemmaService.centralServerUrl
-        if (serverUrl == null) {
-            showEmpty("Connect to a central server\nto view the message feed.")
-        } else {
-            showLoading()
-            fetchAll(serverUrl)
-            openWebSocket(serverUrl)
+        startUpdateLoop()
+    }
+
+    private var updateJob: Job? = null
+    private fun startUpdateLoop() {
+        updateJob?.cancel()
+        updateJob = lifecycleScope.launch {
+            while (isActive) {
+                val serverUrl = GemmaService.centralServerUrl
+                if (serverUrl == null) {
+                    showEmpty("Connect to a central server\nto view the message feed.\n(Service running: ${GemmaService.isRunning})")
+                } else if (webSocket == null) {
+                    showLoading()
+                    fetchAll(serverUrl)
+                    openWebSocket(serverUrl)
+                }
+                delay(5000)
+            }
         }
     }
 
     override fun onPause() {
         super.onPause()
+        updateJob?.cancel()
         webSocket?.close(1000, "paused")
         webSocket = null
         reconnectJob?.cancel()
@@ -82,7 +95,7 @@ class PulsoFragment : Fragment() {
 
                 override fun onOpen(ws: WebSocket, response: Response) {
                     lifecycleScope.launch(Dispatchers.Main) {
-                        setStatus("live", R.color.akbay_damay)
+                        setStatus("live", R.color.akbay_damay, R.color.akbay_damay_soft)
                     }
                 }
 
@@ -104,7 +117,7 @@ class PulsoFragment : Fragment() {
                 override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
                     scheduleReconnect(serverUrl, delayMs = 3_000)
                     lifecycleScope.launch(Dispatchers.Main) {
-                        setStatus("reconnecting", R.color.akbay_signal)
+                        setStatus("reconnecting", R.color.akbay_signal, R.color.akbay_signal_soft)
                     }
                 }
 
@@ -248,15 +261,21 @@ class PulsoFragment : Fragment() {
         binding.contentState.visibility = View.VISIBLE
     }
 
-    private fun setStatus(label: String, colorRes: Int) {
+    private fun setStatus(label: String, mainColorRes: Int, softColorRes: Int) {
         if (_binding == null) return
-        val color = ContextCompat.getColor(requireContext(), colorRes)
+        val mainColor = ContextCompat.getColor(requireContext(), mainColorRes)
+        val softColor = ContextCompat.getColor(requireContext(), softColorRes)
         val bg = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = 999f
-            setColor(color)
+            setColor(softColor)
         }
         binding.tvConnectionStatus.background = bg
+        binding.tvConnectionStatus.setTextColor(mainColor)
+        androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(
+            binding.tvConnectionStatus,
+            android.content.res.ColorStateList.valueOf(mainColor)
+        )
         binding.tvConnectionStatus.text = label
     }
 }

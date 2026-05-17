@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -54,19 +55,32 @@ class MainActivity : AppCompatActivity(), NodeFragment.Listener {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            v.setPadding(bars.left, bars.top, bars.right, 0)
             insets
         }
 
         createDownloadChannel()
         askNotificationPermission()
         setupInitialStep()
+        
+        // Start discovery service automatically so Pulso works even if node is stopped
+        startForegroundService(Intent(this, GemmaService::class.java).apply { 
+            action = GemmaService.ACTION_DISCOVER_ONLY 
+        })
 
         binding.btnNextStep1.setOnClickListener {
             binding.viewFlipper.displayedChild = 1
             binding.tvStepIndicator.text = "Step 2/3"
         }
         binding.btnStartDownload.setOnClickListener { startDownload() }
+
+        binding.bottomNav.apply {
+            itemIconTintList = ContextCompat.getColorStateList(this@MainActivity, R.color.nav_item_tint)
+            itemTextColor = ContextCompat.getColorStateList(this@MainActivity, R.color.nav_item_tint)
+            setItemActiveIndicatorColor(ColorStateList.valueOf(
+                ContextCompat.getColor(this@MainActivity, R.color.akbay_nav_indicator)
+            ))
+        }
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -86,7 +100,10 @@ class MainActivity : AppCompatActivity(), NodeFragment.Listener {
     // ── Navigation ─────────────────────────────────────────────────
     private fun showFragment(tag: String) {
         val tx = supportFragmentManager.beginTransaction()
+        
+        // Hide all current fragments
         supportFragmentManager.fragments.forEach { tx.hide(it) }
+        
         val existing = supportFragmentManager.findFragmentByTag(tag)
         if (existing != null) {
             tx.show(existing)
@@ -104,7 +121,11 @@ class MainActivity : AppCompatActivity(), NodeFragment.Listener {
     private fun showMainApp() {
         binding.onboardingContainer.visibility = View.GONE
         binding.appContainer.visibility = View.VISIBLE
+        binding.tvStepIndicator.visibility = View.GONE
+        
+        // Ensure the initial fragment is loaded
         if (supportFragmentManager.findFragmentById(R.id.fragmentContainer) == null) {
+            showFragment("node")
             binding.bottomNav.selectedItemId = R.id.nav_node
         }
     }
@@ -112,6 +133,7 @@ class MainActivity : AppCompatActivity(), NodeFragment.Listener {
     private fun showOnboarding() {
         binding.onboardingContainer.visibility = View.VISIBLE
         binding.appContainer.visibility = View.GONE
+        binding.tvStepIndicator.visibility = View.VISIBLE
     }
 
     // ── Setup flow ─────────────────────────────────────────────────

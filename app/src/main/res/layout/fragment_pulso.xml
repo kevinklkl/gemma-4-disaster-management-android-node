@@ -80,7 +80,7 @@
                 android:textColor="@color/akbay_bone"
                 android:textSize="11sp"
                 android:textStyle="bold"
-                app:drawableStartCompat="@android:drawable/presence_online"
+                app:drawableStartCompat="@drawable/ic_lucide_activity"
                 android:drawablePadding="4dp"
                 app:drawableTint="@color/akbay_bone" />
         </LinearLayout>
