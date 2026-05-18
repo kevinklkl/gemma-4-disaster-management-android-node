@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.bayanihan.node"
+    namespace = "com.akbay.node"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
-        applicationId = "com.bayanihan.node"
+        applicationId = "com.akbay.node"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

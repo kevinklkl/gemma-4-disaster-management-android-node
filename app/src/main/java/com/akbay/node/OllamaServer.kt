@@ -1,4 +1,4 @@
-package com.bayanihan.node
+package com.akbay.node
 
 import android.util.Log
 import com.google.gson.JsonObject
@@ -35,7 +35,7 @@ class OllamaServer(port: Int = 11434) : NanoHTTPD("0.0.0.0", port) {
                 newFixedLengthResponse(Response.Status.OK, "application/json", """{"status":"exists"}""")
             }
             session.method == Method.POST && session.uri == "/api/show" -> {
-                val body = """{"modelfile":"# Bayanihan Gemma 4 Node\nFROM gemma-4-e2b","parameters":"stop \"<end_of_turn>\"","template":"{{ .Prompt }}"}"""
+                val body = """{"modelfile":"# Akbay Gemma 4 Node\nFROM gemma-4-e2b","parameters":"stop \"<end_of_turn>\"","template":"{{ .Prompt }}"}"""
                 newFixedLengthResponse(Response.Status.OK, "application/json", body)
             }
             session.method == Method.POST && session.uri == "/api/create" -> {

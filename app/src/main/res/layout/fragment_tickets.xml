@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/akbay_paper">
+
+    <!-- Page header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tickets"
+            android:textColor="@color/akbay_ink"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="manage assigned tickets, review the full inbox, and browse completed work."
+            android:textColor="@color/akbay_ash"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Tab bar (rounded, matches web) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tab_container_bg"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="2dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:id="@+id/tabMyTickets"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="my tickets"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/akbay_ink"
+            android:background="@drawable/tab_active_bg" />
+
+        <TextView
+            android:id="@+id/tabInbox"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="inbox"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/akbay_ash"
+            android:background="@android:color/transparent" />
+
+        <TextView
+            android:id="@+id/tabArchive"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="archive"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/akbay_ash"
+            android:background="@android:color/transparent" />
+
+    </LinearLayout>
+
+    <!-- Content area (fills remaining space) -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- ── MY TICKETS ─────────────────────────────────────── -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/contentMyTickets"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Not-logged-in card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/akbay_card"
+                    app:cardCornerRadius="12dp"
+                    app:strokeColor="@color/akbay_paper_edge"
+                    app:strokeWidth="1dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="sign in to view tickets"
+                            android:textColor="@color/akbay_ink"
+                            android:textStyle="bold"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="connect to the server and sign in with your responder credentials."
+                            android:textColor="@color/akbay_ash"
+                            android:textSize="12sp"
+                            android:gravity="center" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnLogin"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="16dp"
+                            android:text="sign in"
+                            android:textAllCaps="false"
+                            android:textColor="@color/akbay_bone"
+                            app:backgroundTint="@color/akbay_header"
+                            app:cornerRadius="8dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Availability banner -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardAvailability"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="#F0FDF4"
+                    app:cardCornerRadius="12dp"
+                    app:strokeColor="#86EFAC"
+                    app:strokeWidth="1dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:id="@+id/availDot"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:background="@drawable/pill_background"
+                            android:backgroundTint="#16A34A" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="8dp">
+
+                            <TextView
+                                android:id="@+id/tvAvailTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Taking tickets"
+                                android:textColor="@color/akbay_ink"
+                                android:textStyle="bold"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tvAvailSubtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="You will be assigned new tickets as they come in."
+                                android:textColor="@color/akbay_ash"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnToggleAvail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pause"
+                            android:textAllCaps="false"
+                            android:textSize="13sp"
+                            android:textColor="#15803D"
+                            app:backgroundTint="#DCFCE7"
+                            app:cornerRadius="8dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Loading -->
+                <ProgressBar
+                    android:id="@+id/loadingMyTickets"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="visible" />
+
+                <!-- Empty state -->
+                <LinearLayout
+                    android:id="@+id/emptyMyTickets"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="40dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="no tickets assigned"
+                        android:textColor="@color/akbay_ink_soft"
+                        android:textStyle="bold"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="tickets appear here when messages need a reply."
+                        android:textColor="@color/akbay_ash"
+                        android:textSize="13sp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- Active tickets list -->
+                <LinearLayout
+                    android:id="@+id/activeTicketsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
+
+                <!-- Queue header (collapsible) -->
+                <LinearLayout
+                    android:id="@+id/queueHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:id="@+id/tvQueueTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="queue — 0 waiting"
+                        android:textColor="@color/akbay_ash"
+                        android:textStyle="bold"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvQueueToggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="show ▶"
+                        android:textColor="@color/akbay_primary"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <!-- Queue ticket list -->
+                <LinearLayout
+                    android:id="@+id/queueContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- ── INBOX ──────────────────────────────────────────── -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/contentInbox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Stats grid -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        app:cardBackgroundColor="@color/akbay_card"
+                        app:cardCornerRadius="12dp"
+                        app:strokeWidth="0dp"
+                        app:cardElevation="0dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+                            <TextView
+                                android:id="@+id/tvStatsProcessed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/akbay_ink"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="PROCESSED"
+                                android:textColor="@color/akbay_ash"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        app:cardBackgroundColor="@color/akbay_card"
+                        app:cardCornerRadius="12dp"
+                        app:strokeWidth="0dp"
+                        app:cardElevation="0dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+                            <TextView
+                                android:id="@+id/tvStatsInQueue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/akbay_ink"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="IN QUEUE"
+                                android:textColor="@color/akbay_ash"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        app:cardBackgroundColor="@color/akbay_card"
+                        app:cardCornerRadius="12dp"
+                        app:strokeWidth="0dp"
+                        app:cardElevation="0dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+                            <TextView
+                                android:id="@+id/tvStatsFailed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="#B71C1C"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="FAILED"
+                                android:textColor="@color/akbay_ash"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <!-- Source filter pills -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tab_container_bg"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/filterAll"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="all"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/akbay_ink"
+                        android:background="@drawable/tab_active_bg" />
+
+                    <TextView
+                        android:id="@+id/filterSms"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="sms"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/akbay_ash"
+                        android:background="@android:color/transparent" />
+
+                    <TextView
+                        android:id="@+id/filterVoice"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="voice"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/akbay_ash"
+                        android:background="@android:color/transparent" />
+
+                    <TextView
+                        android:id="@+id/filterManual"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="manual"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/akbay_ash"
+                        android:background="@android:color/transparent" />
+
+                </LinearLayout>
+
+                <!-- Search bar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tab_container_bg"
+                    android:layout_marginBottom="12dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⌕"
+                        android:textSize="18sp"
+                        android:textColor="@color/akbay_ash"
+                        android:layout_marginEnd="4dp" />
+
+                    <EditText
+                        android:id="@+id/etInboxSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="search by phone, message content…"
+                        android:textColorHint="@color/akbay_smoke"
+                        android:textColor="@color/akbay_ink"
+                        android:textSize="13sp"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp" />
+                </LinearLayout>
+
+                <!-- Loading -->
+                <ProgressBar
+                    android:id="@+id/loadingInbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="gone" />
+
+                <!-- Inbox message list -->
+                <LinearLayout
+                    android:id="@+id/inboxContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <!-- Load older messages button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLoadMoreInbox"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="load older messages"
+                    android:textAllCaps="false"
+                    android:textColor="@color/akbay_ash"
+                    android:visibility="gone"
+                    app:strokeColor="@color/akbay_paper_edge"
+                    app:cornerRadius="10dp" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- ── ARCHIVE ─────────────────────────────────────────── -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/contentArchive"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <ProgressBar
+                    android:id="@+id/loadingArchive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/emptyArchive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="40dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="no completed tickets"
+                        android:textColor="@color/akbay_ink_soft"
+                        android:textStyle="bold"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="approved tickets will appear here."
+                        android:textColor="@color/akbay_ash"
+                        android:textSize="13sp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/archiveContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="6dp">
+
+    <EditText
+        android:id="@+id/etItemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:inputType="text"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:background="@drawable/item_row_bg"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:textColor="@color/akbay_ink"
+        android:textColorHint="@color/akbay_smoke"
+        android:hint="item name"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+    <!-- Qty + unit (hidden when unit == triage) -->
+    <LinearLayout
+        android:id="@+id/layoutQty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="6dp">
+
+        <EditText
+            android:id="@+id/etItemQty"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/item_row_bg"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:textColor="@color/akbay_ink"
+            android:textColorHint="@color/akbay_smoke"
+            android:hint="qty" />
+
+        <TextView
+            android:id="@+id/tvItemUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="@color/akbay_ash"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- Triage badge (shown instead of qty/unit) -->
+    <TextView
+        android:id="@+id/tvItemTriage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:background="@drawable/pill_background"
+        android:backgroundTint="#FEE2E2"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="triage"
+        android:textColor="#DC2626"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/btnRemoveItem"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="2dp"
+        android:src="@drawable/ic_lucide_x"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="remove item"
+        android:visibility="gone" />
+
+</LinearLayout>

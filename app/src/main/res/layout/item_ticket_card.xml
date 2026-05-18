@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ticketCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardBackgroundColor="@color/akbay_card"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/akbay_paper_edge"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ── Header row ─────────────────────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp">
+
+            <!-- Urgency badge -->
+            <TextView
+                android:id="@+id/tvUrgencyBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/pill_background"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="medium"
+                android:textColor="@color/akbay_araw"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <!-- Source -->
+            <TextView
+                android:id="@+id/tvSource"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="from +63912…"
+                android:textColor="@color/akbay_ash"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+
+            <!-- Status badge (approved / queued) -->
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:background="@drawable/pill_background"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="approved"
+                android:textColor="@color/akbay_damay"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Time row -->
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="12dp"
+            android:text="—"
+            android:textColor="@color/akbay_smoke"
+            android:textSize="11sp" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/akbay_paper_edge" />
+
+        <!-- ── Body ───────────────────────────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Original message -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="original message"
+                android:textColor="@color/akbay_ash"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:letterSpacing="0.05" />
+
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text=""
+                android:textColor="@color/akbay_ink_soft"
+                android:textSize="14sp"
+                android:lineSpacingMultiplier="1.4" />
+
+            <!-- ── Extracted info panel ───────────────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/extractedPanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/akbay_paper_warm"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/akbay_paper_edge"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="extracted info"
+                            android:textColor="@color/akbay_ash"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:letterSpacing="0.05" />
+
+                        <TextView
+                            android:id="@+id/tvExtractedSaveState"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textSize="11sp"
+                            android:textColor="@color/akbay_damay" />
+                    </LinearLayout>
+
+                    <!-- Location + Persons row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginEnd="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="location"
+                                android:textColor="@color/akbay_ash"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:textAllCaps="true" />
+
+                            <EditText
+                                android:id="@+id/etLocation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:background="@drawable/item_row_bg"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:paddingTop="6dp"
+                                android:paddingBottom="6dp"
+                                android:inputType="text"
+                                android:textColor="@color/akbay_ink"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:textColorHint="@color/akbay_smoke"
+                                android:hint="location"
+                                android:singleLine="true" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="persons"
+                                android:textColor="@color/akbay_ash"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:textAllCaps="true" />
+
+                            <EditText
+                                android:id="@+id/etPersons"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:background="@drawable/item_row_bg"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:paddingTop="6dp"
+                                android:paddingBottom="6dp"
+                                android:inputType="number"
+                                android:textColor="@color/akbay_ink"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:textColorHint="@color/akbay_smoke"
+                                android:hint="0" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Items label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="required needs · item / qty"
+                        android:textColor="@color/akbay_ash"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:textAllCaps="true" />
+
+                    <!-- Items container (populated programmatically) -->
+                    <LinearLayout
+                        android:id="@+id/itemsContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="6dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAddItem"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="+ add item"
+                        android:textAllCaps="false"
+                        android:textSize="12sp"
+                        android:textColor="@color/akbay_primary"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <!-- Urgency row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="urgency"
+                            android:textColor="@color/akbay_ash"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true" />
+
+                        <LinearLayout
+                            android:id="@+id/urgencyPills"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:orientation="horizontal" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── Reply section ──────────────────────────────── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/tvReplyLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="reply draft"
+                    android:textColor="@color/akbay_ash"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.05" />
+
+                <TextView
+                    android:id="@+id/tvSaveState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/akbay_damay"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/etReplyDraft"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="3"
+                android:maxLines="6"
+                android:gravity="top"
+                android:padding="10dp"
+                android:background="@drawable/item_row_bg"
+                android:textColor="@color/akbay_ink"
+                android:textSize="14sp"
+                android:hint="Write a reply to send back via SMS…"
+                android:textColorHint="@color/akbay_smoke"
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical" />
+
+            <!-- Approve button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApprove"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="12dp"
+                android:text="approve reply"
+                android:textAllCaps="false"
+                android:textColor="@color/akbay_bone"
+                android:textSize="14sp"
+                app:backgroundTint="@color/akbay_header"
+                app:cornerRadius="8dp"
+                app:icon="@drawable/ic_lucide_check_circle_2"
+                app:iconTint="@color/akbay_bone"
+                app:iconPadding="6dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

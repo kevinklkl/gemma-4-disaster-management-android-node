@@ -1,4 +1,4 @@
-package com.bayanihan.node
+package com.akbay.node
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bayanihan.node.databinding.FragmentPulsoBinding
+import com.akbay.node.databinding.FragmentPulsoBinding
 import kotlinx.coroutines.*
 import okhttp3.*
 import org.json.JSONObject

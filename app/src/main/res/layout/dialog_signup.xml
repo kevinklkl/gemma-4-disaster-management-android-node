@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- Dark teal header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/akbay_header"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="create account"
+            android:textColor="@color/akbay_bone"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="register as an Akbay responder"
+            android:textColor="#99FBF6E8"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- Form body -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/akbay_paper"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="8dp">
+
+        <!-- Full name -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="full name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            app:boxStrokeColor="@color/akbay_paper_edge"
+            app:hintTextColor="@color/akbay_ash">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFullName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName|textCapWords"
+                android:textSize="14sp"
+                android:textColor="@color/akbay_ink" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Username -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="username"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            app:boxStrokeColor="@color/akbay_paper_edge"
+            app:hintTextColor="@color/akbay_ash">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSignupUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:textSize="14sp"
+                android:textColor="@color/akbay_ink" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Password -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="password (min. 6 characters)"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            app:boxStrokeColor="@color/akbay_paper_edge"
+            app:hintTextColor="@color/akbay_ash"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/akbay_ash">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSignupPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textSize="14sp"
+                android:textColor="@color/akbay_ink" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Confirm password -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:hint="confirm password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            app:boxStrokeColor="@color/akbay_paper_edge"
+            app:hintTextColor="@color/akbay_ash"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/akbay_ash">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSignupConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textSize="14sp"
+                android:textColor="@color/akbay_ink" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Error text -->
+        <TextView
+            android:id="@+id/tvSignupError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text=""
+            android:textColor="#DC2626"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <!-- Create account button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCreateAccount"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="8dp"
+            android:text="create account"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textColor="@color/akbay_bone"
+            app:backgroundTint="@color/akbay_header"
+            app:cornerRadius="10dp" />
+
+        <!-- Cancel -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelSignup"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/akbay_ash" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/akbay_paper_edge"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Back to sign in link -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account?  "
+                android:textColor="@color/akbay_ash"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvGoToSignIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sign in"
+                android:textColor="@color/akbay_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

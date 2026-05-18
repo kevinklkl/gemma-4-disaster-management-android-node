@@ -9,7 +9,7 @@
 // llama.cpp cloned into app/src/main/cpp/llama.cpp/
 #include "llama.cpp/include/llama.h"
 
-#define LOG_TAG "BayanihanJNI"
+#define LOG_TAG "AkbayJNI"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,  LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
@@ -20,20 +20,20 @@ extern "C" {
 // ── backend lifecycle ────────────────────────────────────────────────────────
 
 JNIEXPORT void JNICALL
-Java_com_bayanihan_node_LlamaEngine_initBackend(JNIEnv*, jobject) {
+Java_com_akbay_node_LlamaEngine_initBackend(JNIEnv*, jobject) {
     llama_backend_init();
     LOGI("llama backend initialised");
 }
 
 JNIEXPORT void JNICALL
-Java_com_bayanihan_node_LlamaEngine_freeBackend(JNIEnv*, jobject) {
+Java_com_akbay_node_LlamaEngine_freeBackend(JNIEnv*, jobject) {
     llama_backend_free();
 }
 
 // ── model ────────────────────────────────────────────────────────────────────
 
 JNIEXPORT jlong JNICALL
-Java_com_bayanihan_node_LlamaEngine_loadModel(JNIEnv* env, jobject,
+Java_com_akbay_node_LlamaEngine_loadModel(JNIEnv* env, jobject,
                                                jstring jPath, jint nGpuLayers) {
     const char* path = env->GetStringUTFChars(jPath, nullptr);
     LOGI("Loading model: %s", path);
@@ -52,7 +52,7 @@ Java_com_bayanihan_node_LlamaEngine_loadModel(JNIEnv* env, jobject,
 }
 
 JNIEXPORT void JNICALL
-Java_com_bayanihan_node_LlamaEngine_freeModel(JNIEnv*, jobject, jlong handle) {
+Java_com_akbay_node_LlamaEngine_freeModel(JNIEnv*, jobject, jlong handle) {
     llama_model_free(reinterpret_cast<llama_model*>(handle));
     g_prefix_n_tokens = 0;
 }
@@ -60,7 +60,7 @@ Java_com_bayanihan_node_LlamaEngine_freeModel(JNIEnv*, jobject, jlong handle) {
 // ── context ──────────────────────────────────────────────────────────────────
 
 JNIEXPORT jlong JNICALL
-Java_com_bayanihan_node_LlamaEngine_createContext(JNIEnv*, jobject,
+Java_com_akbay_node_LlamaEngine_createContext(JNIEnv*, jobject,
                                                    jlong modelHandle, jint nCtx) {
     auto* model = reinterpret_cast<llama_model*>(modelHandle);
     if (!model) return 0;
@@ -78,7 +78,7 @@ Java_com_bayanihan_node_LlamaEngine_createContext(JNIEnv*, jobject,
 }
 
 JNIEXPORT void JNICALL
-Java_com_bayanihan_node_LlamaEngine_freeContext(JNIEnv*, jobject, jlong handle) {
+Java_com_akbay_node_LlamaEngine_freeContext(JNIEnv*, jobject, jlong handle) {
     llama_free(reinterpret_cast<llama_context*>(handle));
     g_prefix_n_tokens = 0;
 }
@@ -86,7 +86,7 @@ Java_com_bayanihan_node_LlamaEngine_freeContext(JNIEnv*, jobject, jlong handle) 
 // ── cache warming ────────────────────────────────────────────────────────────
 
 JNIEXPORT void JNICALL
-Java_com_bayanihan_node_LlamaEngine_warmCache(JNIEnv* env, jobject,
+Java_com_akbay_node_LlamaEngine_warmCache(JNIEnv* env, jobject,
                                                jlong ctxHandle, jstring jPrefix) {
     auto* ctx = reinterpret_cast<llama_context*>(ctxHandle);
     if (!ctx) return;
@@ -143,7 +143,7 @@ Java_com_bayanihan_node_LlamaEngine_warmCache(JNIEnv* env, jobject,
 // ── generation ───────────────────────────────────────────────────────────────
 
 JNIEXPORT jstring JNICALL
-Java_com_bayanihan_node_LlamaEngine_generate(JNIEnv* env, jobject,
+Java_com_akbay_node_LlamaEngine_generate(JNIEnv* env, jobject,
                                               jlong ctxHandle, jstring jPrompt,
                                               jfloat temperature, jfloat topP,
                                               jint topK, jint maxTokens) {

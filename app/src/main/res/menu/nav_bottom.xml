@@ -5,6 +5,10 @@
         android:icon="@drawable/ic_nav_pulso"
         android:title="pulso" />
     <item
+        android:id="@+id/nav_tickets"
+        android:icon="@drawable/ic_nav_tickets"
+        android:title="tickets" />
+    <item
         android:id="@+id/nav_node"
         android:icon="@drawable/ic_nav_node"
         android:title="node" />

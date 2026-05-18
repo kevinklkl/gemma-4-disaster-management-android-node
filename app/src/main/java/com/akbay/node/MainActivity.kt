@@ -1,4 +1,4 @@
-package com.bayanihan.node
+package com.akbay.node
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.bayanihan.node.databinding.ActivityMainBinding
+import com.akbay.node.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import java.io.File
 import java.text.DecimalFormat
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), NodeFragment.Listener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        prefs = getSharedPreferences("bayanihan", Context.MODE_PRIVATE)
+        prefs = getSharedPreferences("akbay", Context.MODE_PRIVATE)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -84,8 +84,9 @@ class MainActivity : AppCompatActivity(), NodeFragment.Listener {
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_node   -> { showFragment("node"); true }
-                R.id.nav_pulso  -> { showFragment("pulso"); true }
+                R.id.nav_node    -> { showFragment("node"); true }
+                R.id.nav_pulso   -> { showFragment("pulso"); true }
+                R.id.nav_tickets -> { showFragment("tickets"); true }
                 else -> false
             }
         }
@@ -109,9 +110,10 @@ class MainActivity : AppCompatActivity(), NodeFragment.Listener {
             tx.show(existing)
         } else {
             val fragment = when (tag) {
-                "node"  -> NodeFragment()
-                "pulso" -> PulsoFragment()
-                else    -> return
+                "node"    -> NodeFragment()
+                "pulso"   -> PulsoFragment()
+                "tickets" -> TicketsFragment()
+                else      -> return
             }
             tx.add(R.id.fragmentContainer, fragment, tag)
         }

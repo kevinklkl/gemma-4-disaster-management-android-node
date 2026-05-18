@@ -1,4 +1,4 @@
-package com.bayanihan.node
+package com.akbay.node
 
 import android.app.*
 import android.content.*
@@ -36,11 +36,11 @@ class GemmaService : Service() {
     companion object {
         private const val TAG = "GemmaService"
         const val NOTIFICATION_ID = 1
-        const val CHANNEL_ID = "bayanihan_node"
-        const val ACTION_STOP = "com.bayanihan.node.STOP"
-        const val ACTION_START_NODE = "com.bayanihan.node.START_NODE"
-        const val ACTION_STOP_NODE = "com.bayanihan.node.STOP_NODE"
-        const val ACTION_DISCOVER_ONLY = "com.bayanihan.node.DISCOVER_ONLY"
+        const val CHANNEL_ID = "akbay_node"
+        const val ACTION_STOP = "com.akbay.node.STOP"
+        const val ACTION_START_NODE = "com.akbay.node.START_NODE"
+        const val ACTION_STOP_NODE = "com.akbay.node.STOP_NODE"
+        const val ACTION_DISCOVER_ONLY = "com.akbay.node.DISCOVER_ONLY"
         
         @Volatile var isRunning = false
         private val _nodeState = MutableStateFlow(NodeState.STOPPED)
@@ -55,10 +55,10 @@ class GemmaService : Service() {
         super.onCreate()
         createChannel()
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager)
-            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BayanihanNode:inference")
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AkbayNode:inference")
         @Suppress("DEPRECATION")
         wifiLock = (getSystemService(WIFI_SERVICE) as WifiManager)
-            .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "BayanihanNode:wifi")
+            .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "AkbayNode:wifi")
         nsdManager = getSystemService(Context.NSD_SERVICE) as NsdManager
     }
 
@@ -205,7 +205,7 @@ class GemmaService : Service() {
     }
 
     private fun createChannel() {
-        val ch = NotificationChannel(CHANNEL_ID, "Bayanihan Node", NotificationManager.IMPORTANCE_LOW)
+        val ch = NotificationChannel(CHANNEL_ID, "Akbay Node", NotificationManager.IMPORTANCE_LOW)
         getSystemService(NotificationManager::class.java).createNotificationChannel(ch)
     }
 
@@ -216,7 +216,7 @@ class GemmaService : Service() {
             PendingIntent.FLAG_IMMUTABLE
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Bayanihan Node")
+            .setContentTitle("Akbay Node")
             .setContentText(status)
             .setSmallIcon(android.R.drawable.ic_menu_share)
             .addAction(android.R.drawable.ic_delete, "Stop", stopPi)

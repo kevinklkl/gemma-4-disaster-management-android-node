@@ -1,4 +1,4 @@
-package com.bayanihan.node
+package com.akbay.node
 
 import android.app.*
 import android.content.Intent
@@ -15,7 +15,7 @@ class ModelDownloadService : Service() {
     private val scope = CoroutineScope(Dispatchers.IO + job)
     
     companion object {
-        const val CHANNEL_ID = "download_channel"
+        const val CHANNEL_ID = "akbay_downloads"
         const val NOTIFICATION_ID = 100
         @Volatile var progress = 0
         @Volatile var isRunning = false
@@ -123,7 +123,7 @@ class ModelDownloadService : Service() {
 
     private fun buildNotification(text: String, prog: Int): Notification {
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Bayanihan Model Download")
+            .setContentTitle("Akbay Model Download")
             .setContentText(text)
             .setSmallIcon(android.R.drawable.stat_sys_download)
             .setProgress(100, prog, prog == 0)

@@ -1,4 +1,4 @@
-package com.bayanihan.node
+package com.akbay.node
 
 import android.app.ActivityManager
 import android.content.Context
@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.bayanihan.node.databinding.FragmentNodeBinding
+import com.akbay.node.databinding.FragmentNodeBinding
 import kotlinx.coroutines.launch
 import java.io.File
 import java.net.Inet4Address

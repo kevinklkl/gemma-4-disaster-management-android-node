@@ -1,4 +1,4 @@
-package com.bayanihan.node
+package com.akbay.node
 
 import android.content.res.ColorStateList
 import android.graphics.Paint
@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bayanihan.node.databinding.ItemPulsoCardBinding
-import com.bayanihan.node.databinding.ItemPulsoInnerRowBinding
+import com.akbay.node.databinding.ItemPulsoCardBinding
+import com.akbay.node.databinding.ItemPulsoInnerRowBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
